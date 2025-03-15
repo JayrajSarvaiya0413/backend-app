@@ -28,7 +28,6 @@ export class AuthService {
 
     return { message: 'Signup successful. Please verify your email!' };
   }
-
   async login(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
@@ -39,6 +38,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Generate JWT token
     const token = this.jwtService.sign({ email });
     return { access_token: token };
   }
