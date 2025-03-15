@@ -16,4 +16,17 @@ export class FlightsService {
     });
     return data;
   }
+
+  async updateFlightStatus(flight_id: number, status: string) {
+    const flight = await this.flightRepository.findOne({
+      where: { id: flight_id },
+    });
+
+    if (!flight) {
+      throw new Error('Flight not found');
+    }
+
+    flight.status = status;
+    return this.flightRepository.save(flight);
+  }
 }

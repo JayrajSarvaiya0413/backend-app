@@ -31,4 +31,7 @@ export class Flight {
 
   @Column()
   price: number;
+
+  @Column({ default: 'On Time' })
+  status: string; // New status field
 }

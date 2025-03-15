@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { FlightsService } from './flights.service';
 
 @Controller('flights')
@@ -12,5 +12,12 @@ export class FlightsController {
     @Query('date') date: Date,
   ) {
     return this.flightsService.searchFlights(source, destination, date);
+  }
+
+  @Patch('update-status')
+  async updateFlightStatus(
+    @Body() body: { flight_id: number; status: string },
+  ) {
+    return this.flightsService.updateFlightStatus(body.flight_id, body.status);
   }
 }
