@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from './bookings.entity';
 import { Flight } from '../flights/flights.entity';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class BookingsService {
@@ -11,10 +12,11 @@ export class BookingsService {
     private bookingRepository: Repository<Booking>,
     @InjectRepository(Flight)
     private flightRepository: Repository<Flight>,
+    private emailService: EmailService,
   ) {}
 
   async bookFlight(
-    user_id: string,
+    user_email: string,
     flight_id: number,
     passenger_name: string,
     seat_number: string,
@@ -31,13 +33,18 @@ export class BookingsService {
     await this.flightRepository.save(flight);
 
     const booking = this.bookingRepository.create({
-      user_id,
+      user_id: user_email,
       flight,
       passenger_name,
       seat_number,
       status: 'confirmed',
     });
 
-    return this.bookingRepository.save(booking);
+    await this.bookingRepository.save(booking);
+
+    // Send email confirmation
+    await this.emailService.sendBookingConfirmation(user_email, flight);
+
+    return booking;
   }
 }
