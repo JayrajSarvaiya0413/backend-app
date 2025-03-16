@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { CabinClass } from '../cabin-classes/cabin-class.entity';
 
 @Entity()
 export class Flight {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   airline: string;
@@ -23,15 +24,15 @@ export class Flight {
   @Column()
   arrival_time: Date;
 
-  @Column()
-  total_seats: number;
+  @Column({ nullable: true })
+  duration: number; // in minutes
 
-  @Column()
-  available_seats: number;
-
-  @Column()
-  price: number;
+  @Column({ nullable: true })
+  aircraft_type: string;
 
   @Column({ default: 'On Time' })
-  status: string; // New status field
+  status: string;
+
+  @OneToMany(() => CabinClass, (cabinClass) => cabinClass.flight)
+  cabinClasses: CabinClass[];
 }

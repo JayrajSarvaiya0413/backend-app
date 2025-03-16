@@ -1,23 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Flight } from '../flights/flights.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Passenger } from '../passengers/passenger.entity';
+import { FlightBooking } from '../flight-bookings/flight-booking.entity';
 
 @Entity()
 export class Booking {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   user_id: string;
 
-  @ManyToOne(() => Flight)
-  flight: Flight;
+  @Column({ nullable: true })
+  booking_reference: string;
 
-  @Column()
-  passenger_name: string;
+  @Column({ nullable: true })
+  booking_date: Date;
 
-  @Column()
-  seat_number: string;
+  @Column('decimal', { nullable: true })
+  total_amount: number;
 
   @Column({ default: 'pending' })
-  status: string;
+  status: string; // pending, confirmed, cancelled
+
+  @Column({ nullable: true })
+  payment_method_id: string;
+
+  @OneToMany(() => Passenger, (passenger) => passenger.booking)
+  passengers: Passenger[];
+
+  @OneToMany(() => FlightBooking, (flightBooking) => flightBooking.booking)
+  flightBookings: FlightBooking[];
 }

@@ -20,11 +20,25 @@ export class FlightsService {
         destination,
         departure_time: Between(startDate, endDate),
       },
+      relations: ['cabinClasses'],
     });
     return data;
   }
 
-  async updateFlightStatus(flight_id: number, status: string) {
+  async getFlightById(id: string): Promise<Flight> {
+    const flight = await this.flightRepository.findOne({
+      where: { id },
+      relations: ['cabinClasses'],
+    });
+
+    if (!flight) {
+      throw new Error('Flight not found');
+    }
+
+    return flight;
+  }
+
+  async updateFlightStatus(flight_id: string, status: string) {
     const flight = await this.flightRepository.findOne({
       where: { id: flight_id },
     });
