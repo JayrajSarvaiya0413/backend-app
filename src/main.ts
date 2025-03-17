@@ -7,8 +7,18 @@ import { DataSeeder } from './migrations/seed-data';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
-  app.enableCors();
+  // Enable CORS with configuration for production
+  app.enableCors({
+    origin: [
+      'http://localhost:5175', // Local development frontend
+      'https://thena-flight-booking.vercel.app', // Add your production frontend URL here
+      'https://thena-flight-booking.netlify.app', // Add alternative frontend URL if needed
+      /\.vercel\.app$/, // Allow all Vercel preview deployments
+      /\.netlify\.app$/, // Allow all Netlify preview deployments
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+  });
 
   // Run migrations
   try {
