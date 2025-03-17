@@ -68,7 +68,8 @@ export class BookingsController {
   async createBooking(@Body() bookingData: BookingCreateData) {
     try {
       this.logger.log('Creating new booking');
-      this.logger.debug('Booking data:', bookingData);
+      this.logger.debug('Booking data:');
+      this.logger.debug(bookingData);
 
       // Validate required fields
       if (!bookingData.user_id) {
@@ -90,21 +91,16 @@ export class BookingsController {
         );
       }
 
+      // Normalize cabin class
       if (!bookingData.cabin_class) {
-        this.logger.error('Cabin class is missing in the booking data');
-        throw new HttpException(
-          'Cabin class is required',
-          HttpStatus.BAD_REQUEST,
-        );
+        bookingData.cabin_class = 'economy';
       }
 
-      // Normalize cabin class to match database format
-      // Convert to lowercase and replace spaces with underscores
       const normalizedCabinClass = this.normalizeCabinClass(
         bookingData.cabin_class,
       );
-      bookingData.cabin_class = normalizedCabinClass;
       this.logger.log(`Normalized cabin class: ${normalizedCabinClass}`);
+      bookingData.cabin_class = normalizedCabinClass;
 
       if (!bookingData.total_amount) {
         this.logger.error('Total amount is missing in the booking data');
@@ -279,11 +275,17 @@ export class BookingsController {
     if (!cabinClass) return 'economy';
 
     // Convert to lowercase
-    let normalized = cabinClass.toLowerCase();
+    let normalized = cabinClass.toLowerCase().trim();
 
     // Handle common variations
     if (normalized.includes('premium') && normalized.includes('economy')) {
-      return 'premium_economy';
+      return 'premium economy';
+    } else if (
+      normalized === 'premium' ||
+      normalized === 'premium_economy' ||
+      normalized === 'premium-economy'
+    ) {
+      return 'premium economy';
     } else if (normalized.includes('business')) {
       return 'business';
     } else if (normalized.includes('first')) {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CabinClass } from './cabin-class.entity';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class CabinClassesService {
@@ -21,7 +22,10 @@ export class CabinClassesService {
     classType: string,
   ): Promise<CabinClass> {
     return this.cabinClassRepository.findOne({
-      where: { flight: { id: flightId }, class_type: classType },
+      where: {
+        flight: { id: flightId },
+        class_type: ILike(`%${classType}%`),
+      },
     });
   }
 
