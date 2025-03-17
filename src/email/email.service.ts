@@ -212,6 +212,8 @@ export class EmailService {
         text: textContent,
         html: htmlContent,
       };
+      console.log('email conformation mail option--->', email);
+      console.log('email conformation all mail option--->', mailOptions);
 
       this.logger.log(`Attempting to send email to ${email} with options:`, {
         from: mailOptions.from,
