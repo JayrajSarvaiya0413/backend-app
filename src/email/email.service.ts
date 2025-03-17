@@ -24,6 +24,30 @@ export class EmailService {
   constructor() {
     try {
       this.logger.log('Initializing email service');
+
+      // Check if all required environment variables are set
+      if (
+        !process.env.SMTP_HOST ||
+        !process.env.SMTP_PORT ||
+        !process.env.SMTP_USER ||
+        !process.env.SMTP_PASS
+      ) {
+        this.logger.error('Missing required SMTP environment variables');
+        this.logger.error(
+          `SMTP_HOST: ${process.env.SMTP_HOST ? 'Set' : 'Missing'}`,
+        );
+        this.logger.error(
+          `SMTP_PORT: ${process.env.SMTP_PORT ? 'Set' : 'Missing'}`,
+        );
+        this.logger.error(
+          `SMTP_USER: ${process.env.SMTP_USER ? 'Set' : 'Missing'}`,
+        );
+        this.logger.error(
+          `SMTP_PASS: ${process.env.SMTP_PASS ? 'Set' : 'Missing'}`,
+        );
+        return; // Don't create transporter if env vars are missing
+      }
+
       this.logger.log(`SMTP Host: ${process.env.SMTP_HOST}`);
       this.logger.log(`SMTP Port: ${process.env.SMTP_PORT}`);
       this.logger.log(`SMTP User: ${process.env.SMTP_USER}`);
@@ -31,11 +55,20 @@ export class EmailService {
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT),
-        secure: false,
+        secure: process.env.SMTP_SECURE === 'true',
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
+      });
+
+      // Verify SMTP connection
+      this.transporter.verify((error, success) => {
+        if (error) {
+          this.logger.error('SMTP connection verification failed', error);
+        } else {
+          this.logger.log('SMTP connection verified successfully');
+        }
       });
 
       this.logger.log('Email service initialized successfully');
@@ -47,6 +80,17 @@ export class EmailService {
   async sendBookingConfirmation(email: string, flightDetails: FlightDetails) {
     try {
       this.logger.log(`Sending booking confirmation to ${email}`);
+
+      // Check if transporter is initialized
+      if (!this.transporter) {
+        this.logger.error(
+          'Email transporter not initialized. Cannot send email.',
+        );
+        return {
+          success: false,
+          error: 'Email service not properly configured',
+        };
+      }
 
       const formattedDate = (dateStr: string) => {
         try {
@@ -162,15 +206,21 @@ export class EmailService {
       `;
 
       const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: email,
         subject: `Flight Booking Confirmation - ${flightDetails.booking_reference}`,
         text: textContent,
         html: htmlContent,
       };
 
+      this.logger.log(`Attempting to send email to ${email} with options:`, {
+        from: mailOptions.from,
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+      });
+
       const result = await this.transporter.sendMail(mailOptions);
-      this.logger.log(`Email sent successfully to ${email}`);
+      this.logger.log(`Email sent successfully to ${email}`, result);
       return result;
     } catch (error) {
       this.logger.error(
@@ -186,15 +236,31 @@ export class EmailService {
     try {
       this.logger.log(`Sending flight update to ${email}`);
 
+      // Check if transporter is initialized
+      if (!this.transporter) {
+        this.logger.error(
+          'Email transporter not initialized. Cannot send email.',
+        );
+        return {
+          success: false,
+          error: 'Email service not properly configured',
+        };
+      }
+
       const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
         to: email,
         subject: 'Flight Status Update',
         text: `Your flight status has been updated to: ${flightStatus}`,
       };
 
+      this.logger.log(`Attempting to send flight update email to ${email}`);
+
       const result = await this.transporter.sendMail(mailOptions);
-      this.logger.log(`Email sent successfully to ${email}`);
+      this.logger.log(
+        `Flight update email sent successfully to ${email}`,
+        result,
+      );
       return result;
     } catch (error) {
       this.logger.error(
