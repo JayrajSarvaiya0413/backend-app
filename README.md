@@ -1,99 +1,186 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Thena Flight Booking API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust, scalable backend API for the Thena Flight Booking platform built with NestJS, TypeORM, and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
-## Description
+## 🌟 Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Complete Flight Management**: Search, filter, and book flights with ease
+- **User Authentication**: Secure JWT-based authentication system
+- **Booking System**: End-to-end booking flow with passenger information
+- **Email Notifications**: Automated booking confirmations and updates
+- **Data Persistence**: PostgreSQL database with TypeORM integration
+- **Automatic Migrations**: Built-in data migrations and seeding
 
-## Project setup
+## 📋 API Endpoints
 
-```bash
-$ npm install
+### Authentication
+
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Authenticate a user and receive JWT token
+- `GET /auth/profile` - Get current user profile
+
+### Flights
+
+- `GET /flights` - List all available flights
+- `GET /flights/:id` - Get details for a specific flight
+- `GET /flights/search` - Search flights with filters
+- `POST /flights` - Create a new flight (admin)
+- `PUT /flights/:id` - Update flight details (admin)
+
+### Bookings
+
+- `GET /bookings` - List user's bookings
+- `GET /bookings/:id` - Get details for a specific booking
+- `POST /bookings` - Create a new booking
+- `PATCH /bookings/:id/status` - Update booking status
+
+### Passengers
+
+- `GET /passengers` - List passengers
+- `POST /passengers` - Add a passenger
+- `GET /passengers/:id` - Get passenger details
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- PostgreSQL database (or Supabase account)
+
+### Environment Setup
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+DATABASE_URL=postgresql://postgres:password@localhost:5432/flight_booking
+JWT_SECRET=your-secret-key-here
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+SMTP_PASS=your-email-password
+PORT=3000
 ```
 
-## Compile and run the project
+### Installation
 
 ```bash
-# development
-$ npm run start
+# Install dependencies
+npm install
 
-# watch mode
-$ npm run start:dev
+# Run in development mode
+npm run start:dev
 
-# production mode
-$ npm run start:prod
+# Build for production
+npm run build
+
+# Run in production mode
+npm run start:prod
 ```
 
-## Run tests
+## 📊 Database Setup
+
+The application will automatically create the necessary database tables and seed initial data when you start the server.
+
+### Database Migrations
+
+The application includes automatic migrations that run on startup:
+
+1. **Flight Duration Migration**: Updates flights with calculated duration values
+2. **Booking Reference Migration**: Generates booking references for existing bookings
+3. **Data Seeder**: Populates the database with sample data if it's empty
+
+## 🌐 Deployment
+
+### Deploying to Render (Free Tier)
+
+This repository includes configuration for easy deployment to Render:
+
+1. Fork or clone this repository to your GitHub account
+2. Sign up for a [Render account](https://render.com)
+3. Create a new Web Service and connect your GitHub repository
+4. Use the following settings:
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm run start:prod`
+5. Add the required environment variables
+6. Deploy!
+
+For detailed deployment instructions, see [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) or the visual guide in [RENDER_DEPLOYMENT_VISUAL_GUIDE.md](RENDER_DEPLOYMENT_VISUAL_GUIDE.md).
+
+### Alternative Deployment Options
+
+- **Railway**: Similar to Render with a free tier
+- **Heroku**: Requires a credit card for free tier
+- **AWS Elastic Beanstalk**: More complex but highly scalable
+
+## 🧪 Testing
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# E2E tests
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# Test coverage
+npm run test:cov
 ```
 
-## Deployment
+## 📝 API Documentation
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+When running in development mode, API documentation is available at:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
+```
+http://localhost:3000/api
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🔧 Configuration Options
 
-## Resources
+### Email Service
 
-Check out a few resources that may come in handy when working with NestJS:
+The application uses Nodemailer for sending emails. Configure the following environment variables:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-email@example.com
+SMTP_PASS=your-email-password
+```
 
-## Support
+For Gmail, you may need to use an app password instead of your regular password.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### JWT Authentication
 
-## Stay in touch
+Configure JWT settings with:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRATION=1d
+```
 
-## License
+## 🤝 Contributing
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgements
+
+- [NestJS](https://nestjs.com/) - The framework used
+- [TypeORM](https://typeorm.io/) - ORM for database interactions
+- [PostgreSQL](https://www.postgresql.org/) - Database
+- [Supabase](https://supabase.com/) - Database hosting and more
+- [Render](https://render.com/) - Deployment platform
